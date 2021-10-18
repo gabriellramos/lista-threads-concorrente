@@ -15,7 +15,7 @@ void *numeroCrescente(void *tid){
 
 void *numeroDecrescente(void *tid){
 	int i, limite=500;
-	printf ("Thread %d contando numeros em ordem decrescente\n", tid );
+	printf ("\n\nThread %d contando numeros em ordem decrescente\n", tid );
 	for (i=limite;i>0;i--){
 		printf ("%d-%d\t", i,tid);
 	}
@@ -31,7 +31,6 @@ int main(int argc, char *argv[]){
 	status = pthread_create(&threads2, NULL, numeroDecrescente, (void*)2);
 
 	pthread_join(threads2, NULL);
-	
 
 	return 0;
 }
