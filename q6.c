@@ -4,9 +4,7 @@
 
 int M[3][3];
 
-void *inverteLinha1();
-void *inverteLinha2();
-void *inverteLinha3();
+void *inverteLinha(void *tid);
 void recebeMatriz();
 void imprimeMatriz();
 
@@ -17,11 +15,11 @@ int main(){
 	
 	recebeMatriz(M);
 	
-	pthread_create(&thread1, NULL, inverteLinha1,(void*)0);
-	pthread_create(&thread2, NULL, inverteLinha2, (void*)0);
-	pthread_create(&thread3, NULL, inverteLinha3, (void*)0);
+	pthread_create(&thread1, NULL, inverteLinha,(void*)0);
+	pthread_create(&thread2, NULL, inverteLinha, (void*)1);
+	pthread_create(&thread3, NULL, inverteLinha, (void*)2);
 	
-
+	pthread_join(thread1, NULL);
 	pthread_join(thread2, NULL);
 	pthread_join(thread3, NULL);
 	
@@ -30,39 +28,19 @@ int main(){
 	return 0;
 }
 
-void *inverteLinha1(){
+void *inverteLinha(void *tid){
 	int i, aux, j=2, meio=j/2;
-
+	long linha = (long)tid;
 	for (i=0; i<meio; i++, j--){
-		aux=M[0][i];
-		M[0][i] = M[0][j];
-		M[0][j] = aux;
+		aux=M[linha][i];
+		M[linha][i] = M[linha][j];
+		M[linha][j] = aux;
 	}
 	
-}
-
-void *inverteLinha2(){
-	int i, aux, j=2, meio=j/2;
-	
-	for (i=0; i<meio; i++, j--){
-		aux=M[1][i];
-		M[1][i] = M[1][j];
-		M[1][j] = aux;
-	}
-}
-
-void *inverteLinha3(){
-	int i, aux, j=2, meio=j/2;
-
-	for (i=0; i<meio; i++, j--){
-		aux=M[2][i];
-		M[2][i] = M[2][j];
-		M[2][j] = aux;
-	}
 }
 
 void recebeMatriz(){
-	FILE *file = fopen("q6.txt","r");
+	FILE *file = fopen("matriz.txt","r");
 	int i,j;
 	for (i=0;i<3;i++){
 		for (j=0;j<3;j++){

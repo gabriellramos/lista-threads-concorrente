@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <pthread.h>
 #define N 10
 
@@ -20,12 +18,10 @@ int main(){
 	for(i=0; i<N; i++) {
 		pthread_join(threads[i], NULL);
 	}
-
-	return 0;
-}
-
-
-void *imprimePrimos(int inicio, int fim){
+		return 0;
+	}
+	
+	void *imprimePrimos(int inicio, int fim){
 	int i, cont=0, j,aux;
 	for (i=inicio;i<=fim;i++){
 		cont=1;
@@ -37,4 +33,3 @@ void *imprimePrimos(int inicio, int fim){
 			printf ("%d ", i);
 	}
 }
-

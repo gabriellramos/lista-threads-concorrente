@@ -4,14 +4,24 @@
 #define N 10
 #define M 1000
 
-void *multiplicacao(int *vetor, int k, int inicio, int fim);
+int vetor[M];
+int k;
+int inicio=0;
+int fim=99;
 
-void *imprime(int *vetor, int inicio, int fim);
+pthread_mutex_t mutexsum;
+
+void *multiplicacao(void *tid);
+void imprime(int *vetor, int inicio, int fim);
+
 
 int main(void *args){
 	pthread_t threads[N];
-	int i=0, inicio=0, fim=99, k;
-	int vetor[M];
+	int i=0;
+	int create; //variável que recebe o retorno da função pthread_create()
+    long num; //identificador da thread
+ 
+    pthread_mutex_init(&mutexsum, NULL);
 	
 	for (i=0;i<M;i++)
 		vetor[i] = rand() % 1000 + 1;
@@ -22,38 +32,42 @@ int main(void *args){
 	
 	printf ("\n\nInsira um escalar para multiplicacao do vetor: ");
 	scanf ("%d", &k);
-	
+	num = 1;
 	for (i=0;i<N;i++){
-	
-		printf ("THREAD %d - (%d a %d)\n ",i+1, inicio, fim);
-		pthread_create(&(threads[i]), NULL, multiplicacao(vetor, k, inicio,fim), NULL);
-		inicio=fim+1;
-		fim+=100;
-		
+		pthread_create(&(threads[i]), NULL, multiplicacao,(void *)num);
+		num++;
 	}
 	
 	for(i=0; i<N; i++) {
 		pthread_join(threads[i], NULL);
 	}
 
-	printf ("oi");
+	printf ("\n\nVetor escalado\n");
+	imprime(vetor,0,999);
+	pthread_mutex_destroy(&mutexsum);
 	return 0;
 }
 
-void *multiplicacao(int *vetor, int k, int inicio, int fim){
+void *multiplicacao(void *tid){
+	long id = (long)tid;
 	int i;	
-	//printf ("\n\n");
+	
 	for (i=inicio;i<=fim;i++){
+		pthread_mutex_lock (&mutexsum);
 		vetor[i] *= k;
-		//printf ("%d  ",vetor[i]);
+		pthread_mutex_unlock (&mutexsum);
 	}
+	inicio=fim+1;
+	fim+=100;
+    pthread_exit(NULL);
 	
 }
 
-void *imprime(int *vetor, int inicio, int fim){
+void imprime(int *vetor, int inicio, int fim){
 	int i;
 	for (i=inicio;i<=fim;i++){
 		printf ("%d  ",vetor[i]);
 	}
 		
 }
+
